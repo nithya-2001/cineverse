@@ -31,9 +31,8 @@ const Login = () => {
              const user = userCredential.user;
              updateProfile(user, {
                 displayName: user.current.value, 
-              }).then(() => {
-                navigation("/browse")
-              }).catch((error) => {
+              }).then(() => { })
+              .catch((error) => {
                 setErrorMessage(error.message)
               });
              
@@ -49,7 +48,6 @@ const Login = () => {
             .then((userCredential) => {
             // Signed in 
             const user = userCredential.user;
-            navigation("/browse")
             })
             .catch((error) => {
               const errorCode = error.code;
@@ -62,7 +60,6 @@ const Login = () => {
   return (
     <div>
         <Header />
-        <h3 className='absolute z-10 py-20 px-2 m-4 text-2xl font-bold text-red-600'>CINEVERSE</h3>
         <div className='absolute'>
         <img src="https://assets.nflxext.com/ffe/siteui/vlv3/9390f6f6-cf80-4bc9-8981-8c2cc8adf98a/web/US-en-20250421-TRIFECTA-perspective_d267de16-c801-48de-9014-f47514040d8b_small.jpg"
         alt="login-logo"/>

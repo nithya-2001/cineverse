@@ -1,27 +1,41 @@
-import React from 'react';
-import { signOut } from "firebase/auth";
+import React, { useEffect } from 'react';
+import { onAuthStateChanged, signOut } from "firebase/auth";
 import { auth } from '../utils/firebase';
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { addUser,removeUser } from '../utils/userSlice';
+import { avatar, logo } from '../utils/constants';
 
 const Header = () => {
 
+  const dispatch=useDispatch();
   const navigate=useNavigate();
   const user=useSelector((store)=>store.user);
   const handleSignOut= ()=>{
-    signOut(auth).then(() => {
-      navigate("/")
-    }).catch((error) => {
-      // An error happened.
+    signOut(auth).then(() => {    })
+    .catch((error) => {
     });
   }
+  useEffect(()=>{
+    const unSubscribe=onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const {uid,email,displayName} = user;
+        dispatch(addUser({uid:uid, email:email, displayName:displayName}));
+        navigate("/browse");
+      } else {
+        dispatch(removeUser());
+        navigate("/");
+      }
+    });
+    return ()=> unSubscribe();
+  },[]);
 
   return (
     <div className="absolute w-screen px-8 py-2 bg-gradient-to-b from-black z-10 flex justify-between">
-        <img className="w-24 p-2" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZrmyHdEXq3crIWfpomk6_DqIXqZByyhFg8w&s"
-           alt="logo"/>
+        <img className="w-24 p-4" src={logo} alt="logo"/>
+        <h3 className='absolute z-10 py-20 text-2xl font-bold text-red-600'>CINEVERSE</h3>
         {user && <div className='flex'>
-          <img className='w-12 h-12' alt="usericon" src="https://cdn-icons-png.flaticon.com/512/9187/9187604.png"/>
+          <img className='w-12 h-12' alt="usericon" src={avatar}/>
           <button onClick={handleSignOut} className='font-bold text-white'>(Sign Out)</button>
         </div>}
 
